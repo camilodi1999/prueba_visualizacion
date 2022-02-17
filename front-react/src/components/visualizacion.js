@@ -8,18 +8,18 @@ function Visualizacion() {
   const url_django = "http://localhost:8000";
   const [fields, setFields] = useState({});
   const [data, setData] = useState({});
+  const [svg, setSvg] = useState();
 
   function handleChange(fields_updated) {
     let url = new URL(url_django + "/data/");
     url.search = new URLSearchParams(fields_updated).toString();
+
     fetch(url)
       .then((res) => res.json())
       .then((json) => {
         setData(json);
-        d3.selectAll("*").remove();
       });
   }
-
   useEffect(() => {
     fetch(url_django + "/params")
       .then((res) => res.json())

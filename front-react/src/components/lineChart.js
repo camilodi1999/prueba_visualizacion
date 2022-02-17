@@ -6,17 +6,18 @@ function LineChart(props) {
   const svgRef = useRef(null);
   useEffect(() => {
     let svgElement = d3.select(svgRef.current);
+    svgElement.selectAll("*").remove();
     let leftMargin = 70;
-    let topMargin = 30;
+    let topMargin = 10;
 
     let xExtent = d3.extent(data, (d) => d.time);
-    let xScale = d3.scaleLinear().domain(xExtent).range([leftMargin, 600]);
+    let xScale = d3.scaleLinear().domain(xExtent).range([leftMargin, 900]);
 
     let yMax = d3.max(data, (d) => d.value);
     let yScale = d3
       .scaleLinear()
-      .domain([0, yMax + topMargin])
-      .range([400, 0]);
+      .domain([d3.extent(data, (d) => d.value)[0], yMax + topMargin])
+      .range([400, 20]);
 
     let xAxis = d3.axisBottom().scale(xScale);
 
@@ -26,8 +27,8 @@ function LineChart(props) {
       .attr("transform", "translate(0,420)")
       .call(xAxis)
       .append("text")
-      .attr("x", (900 + 70) / 2) //middle of the xAxis
-      .attr("y", "50") // a little bit below xAxis
+      .attr("x", 420 / 2) //middle of the xAxis
+      .attr("y", "0") // a little bit below xAxis
       .text("Year");
 
     //yAxis and yAxis label
@@ -41,9 +42,8 @@ function LineChart(props) {
       .append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", "-150")
-      .attr("y", "-50")
-      .attr("text-anchor", "end")
-      .text("Value");
+      .attr("y", "0")
+      .attr("text-anchor", "middle");
 
     const sumstat = d3.group(data, (d) => d.zone_1);
 
@@ -59,14 +59,18 @@ function LineChart(props) {
           .line()
           .x((d) => xScale(d.time))
           .y((d) => yScale(d.value))
-          .curve(d3.curveCardinal)(d);
+          .curve(d3.curveCardinalOpen)(d);
       })
       .attr("fill", "none")
       .attr("stroke", "black")
       .attr("stroke-width", 1);
   }, [data]);
 
-  return <svg ref={svgRef} width={1000} height={700} />;
+  return (
+    <div style={{ paddingTop: "3rem" }}>
+      <svg ref={svgRef} width={600} height={500} />
+    </div>
+  );
 }
 
 export default LineChart;
