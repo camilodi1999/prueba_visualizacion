@@ -8,7 +8,6 @@ function Visualizacion() {
   const url_django = "http://localhost:8000";
   const [fields, setFields] = useState({});
   const [data, setData] = useState({});
-  const [svg, setSvg] = useState();
 
   function handleChange(fields_updated) {
     let url = new URL(url_django + "/data/");
